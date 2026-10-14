@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dual-Arm Tic-Tac-Toe · Shucheng Jia</title>
+  <meta name="description" content="An autonomous dual-arm robot that plays Tic-Tac-Toe, built with ROS 2, RGB-D perception and MoveIt 2.">
+  <link rel="icon" href="../images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="project-page">
+  <a class="back-link" href="../index.html"><i class="fa-solid fa-arrow-left"></i> Shucheng Jia</a>
+
+  <header class="project-header">
+    <h1>Autonomous Dual-Arm Tic-Tac-Toe</h1>
+    <p class="subtitle">Personal project · Duke University · Fall 2025</p>
+  </header>
+
+  <div class="hero-media">
+    <div class="media-box" data-video="../videos/tictactoe.mp4" data-poster="../images/tictactoe.jpg" data-label="Real-robot gameplay video" data-autoplay></div>
+    <p class="caption">Two Kinova Gen3 Lite arms play a full game autonomously (16× speed).</p>
+  </div>
+
+  <h2>Overview</h2>
+  <p>
+    I built a dual-arm robot that plays Tic-Tac-Toe on its own, using ROS 2, an RGB-D camera and MoveIt 2 on two Kinova Gen3 Lite arms.
+    The system covers the full pipeline: it sees the board, decides each move, plans the motion and picks and places pieces on real hardware.
+    The two arms play opposite colors and take turns, each one choosing its move from the current board state.
+  </p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">~90%</div><div class="lbl">Task success in Gazebo</div></div>
+    <div class="stat"><div class="num">~50%</div><div class="lbl">Task success on real arms</div></div>
+    <div class="stat"><div class="num">2 arms</div><div class="lbl">Kinova Gen3 Lite, taking turns</div></div>
+  </div>
+
+  <h2>System</h2>
+  <ul>
+    <li><b>Perception.</b> A fixed overhead RGB-D camera detects pieces by color in the RGB image, then uses depth and the point cloud
+      to get each piece's 3D position. A coordinate transform maps it into the base frame of the arm that will pick it.</li>
+    <li><b>Decision.</b> A rule-based Tic-Tac-Toe player in Python reads the detected 3×3 board, finds the legal cells,
+      and picks a move that takes a winning cell when one exists or blocks the opponent's win.</li>
+    <li><b>Grasp and place poses.</b> The pieces have a fixed shape, so instead of a general grasp planner I predefined the grasp height
+      and end-effector orientation and combined them with the detected position to get the grasp pose. The nine place poses on the board are predefined.</li>
+    <li><b>Motion planning.</b> The Python program calls MoveIt 2, which handles IK, path planning and collision checking.
+      The arm executes the pick-and-place only if planning succeeds; otherwise the action is skipped.</li>
+    <li><b>Closed loop.</b> ROS 2 connects the camera, decision and planning modules. After every move the camera re-reads the board
+      before the next decision, closing the loop at the task level.</li>
+  </ul>
+
+  <div class="media-box natural" data-video="../videos/tictactoe-gazebo.mp4" data-label="Gazebo demo" data-autoplay></div>
+  <p class="caption">The same pipeline in Gazebo simulation (2× speed).</p>
+
+  <h2>Lessons learned</h2>
+  <p>
+    The system reached about 90% task success in Gazebo and about 50% on the real arms. On hardware, most failures came from
+    camera calibration error, visual noise, and the table color interfering with piece detection. These errors shift the final grasp position,
+    so a grasp can miss even when MoveIt 2 plans and executes correctly. Perception accuracy, not planning, was the bottleneck in going from simulation to the real robot.
+  </p>
+
+  <footer>© 2026 Shucheng Jia · <a href="../index.html">Back to home</a></footer>
+</div>
+<script src="../js/main.js"></script>
+</body>
+</html>

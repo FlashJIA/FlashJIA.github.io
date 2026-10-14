@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SE-CBF · Shucheng Jia</title>
+  <meta name="description" content="Super-Ellipse Control Barrier Functions for safe, less conservative multi-robot navigation.">
+  <link rel="icon" href="../images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="project-page">
+  <a class="back-link" href="../index.html"><i class="fa-solid fa-arrow-left"></i> Shucheng Jia</a>
+
+  <header class="project-header">
+    <h1>Super-Ellipse Control Barrier Functions for Enhanced Obstacle Avoidance in Complex Multi-Agent Environments</h1>
+    <p class="subtitle">Wenbin Liu, <b>Shucheng Jia</b>, Mikhail Svinin</p>
+    <p class="subtitle">IEEE ICRAS 2025 · Undergraduate thesis, Ritsumeikan University · Advised by Prof. Wenbin Liu and Dr. Mikhail Svinin</p>
+    <div class="btn-row">
+      <a class="btn" href="https://ieeexplore.ieee.org/document/11108843" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> Paper</a>
+      <a class="btn" href="https://github.com/FlashJIA/Super-ellipse-CBF" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Code</a>
+    </div>
+  </header>
+
+  <div class="hero-media">
+    <div class="media-box natural" data-video="../videos/se-cbf-intersection.mp4" data-label="Intersection comparison" data-autoplay></div>
+    <p class="caption">Multi-robot intersection in Gazebo. Left: SE-CBF. Right: standard circular CBF.</p>
+  </div>
+
+  <h2>Overview</h2>
+  <p>
+    My undergraduate thesis studies safe navigation for mobile robots in multi-robot environments: avoiding collisions
+    while keeping traffic moving efficiently. Control barrier functions (CBFs) are a standard tool for real-time safety, but they
+    usually use a circular safety boundary. Around rectangular obstacles that boundary is too conservative: it blocks free space
+    the robot could actually use and forces unnecessary detours. <b>SE-CBF</b> uses a <b>super-ellipse</b> boundary that fits the
+    obstacle's real shape, cutting out those detours.
+  </p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">123 s → 62 s</div><div class="lbl">Multi-robot intersection completion time</div></div>
+    <div class="stat"><div class="num">≈ 2× faster</div><div class="lbl">Task completion in a dense intersection</div></div>
+    <div class="stat"><div class="num">Sim + Real</div><div class="lbl">Validated in Gazebo and on physical robots</div></div>
+  </div>
+
+  <h2>Method</h2>
+  <ul>
+    <li><b>Perception.</b> A fixed overhead camera and OpenCV detect obstacles with color-threshold segmentation and bounding boxes.
+      A pixel-to-world mapping then converts each detection into a 2D global frame with its origin at the center of the arena,
+      giving the obstacle's position and size.</li>
+    <li><b>Safety constraints.</b> The position and size of each obstacle define a super-ellipse CBF constraint that matches its footprint.</li>
+    <li><b>Control.</b> A quadratic program (QP) optimizes the robot's navigation command so that it satisfies every safety constraint
+      while staying as close as possible to the original motion toward the goal.</li>
+    <li><b>System.</b> Everything is built on ROS and was tested both in Gazebo and on real robots.</li>
+  </ul>
+
+  <div class="media-narrow">
+    <div class="media-box natural" data-video="../videos/se-cbf-single.mp4" data-label="Circle vs. super-ellipse" data-autoplay></div>
+    <p class="caption">Top: a circular CBF boundary around an elongated obstacle. Bottom: the super-ellipse boundary fits the obstacle's shape.</p>
+  </div>
+
+  <h2>Experiments</h2>
+  <div class="media-grid">
+    <div>
+      <div class="media-box natural" data-video="../videos/se-cbf.mp4" data-poster="../images/se-cbf.jpg" data-label="Random-obstacle experiment" data-autoplay></div>
+      <p class="caption">Random-obstacle environment: four robot teams cross to the opposite side (2× speed).</p>
+    </div>
+    <div>
+      <div class="media-box natural" data-video="../videos/se-cbf-real.mp4" data-label="Real-robot experiment" data-autoplay></div>
+      <p class="caption">Real robots tracked by an overhead camera avoid the obstacle (purple box).</p>
+    </div>
+  </div>
+
+  <h2>Results</h2>
+  <p>
+    In a dense multi-robot intersection, SE-CBF cut the task completion time from <b>123 s to 62 s</b> compared with the standard circular CBF,
+    a clear gain in traffic efficiency with the same safety constraints.
+  </p>
+
+  <h2>What I did</h2>
+  <ul>
+    <li>Built the camera-based perception pipeline: OpenCV segmentation, bounding-box detection and pixel-to-world mapping.</li>
+    <li>Designed the super-ellipse CBF formulation and implemented the QP-based navigation controller.</li>
+    <li>Built the system on ROS and ran the experiments in Gazebo and on real robots.</li>
+  </ul>
+  <p>
+    The project gave me hands-on experience in ROS development, vision-based localization, robot safety control,
+    and taking a system from simulation to real hardware.
+  </p>
+
+  <footer>© 2026 Shucheng Jia · <a href="../index.html">Back to home</a></footer>
+</div>
+<script src="../js/main.js"></script>
+</body>
+</html>
