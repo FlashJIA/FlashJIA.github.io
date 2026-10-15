@@ -456,6 +456,16 @@ footer {
 
 .media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 
+/* Figures: diagrams and plots on project pages */
+.figure { margin: 24px 0; }
+.figure.media-narrow { margin: 24px auto; }
+.figure img { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+.diagram { border: 1px solid var(--border); border-radius: var(--radius); background: #fff; padding: 16px; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 600px; height: auto; font-family: inherit; }
+.diagram.compact svg { min-width: 480px; }
+.plot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.plot-grid.two { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-items: start; }
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1180px) {

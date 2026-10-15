@@ -40,6 +40,11 @@
   </div>
 
   <h2>System</h2>
+  <figure class="figure">
+    <div class="diagram"><svg viewBox="0 0 760 340" role="img" aria-labelledby="ttt-t"><title id="ttt-t">Dual-arm Tic-Tac-Toe ROS 2 system</title><defs><marker id="arT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#14213d"/></marker></defs><rect x="10" y="120" width="130" height="90" rx="8" fill="#ffffff" stroke="#14213d" stroke-width="1.5"/><text x="75.0" y="142" text-anchor="middle" font-size="14" font-weight="700" fill="#14213d">RGB-D camera</text><text x="75.0" y="162" text-anchor="middle" font-size="12" fill="#6b7380">overhead,</text><text x="75.0" y="179" text-anchor="middle" font-size="12" fill="#6b7380">color + depth</text><rect x="170" y="120" width="150" height="90" rx="8" fill="#ffffff" stroke="#14213d" stroke-width="1.5"/><text x="245.0" y="142" text-anchor="middle" font-size="14" font-weight="700" fill="#14213d">Perception</text><text x="245.0" y="162" text-anchor="middle" font-size="12" fill="#6b7380">detect pieces by color</text><text x="245.0" y="179" text-anchor="middle" font-size="12" fill="#6b7380">depth → 3D centroids</text><text x="245.0" y="196" text-anchor="middle" font-size="12" fill="#6b7380">TF → robot frame</text><rect x="350" y="120" width="150" height="90" rx="8" fill="#ffffff" stroke="#14213d" stroke-width="1.5"/><text x="425.0" y="142" text-anchor="middle" font-size="14" font-weight="700" fill="#14213d">Game brain</text><text x="425.0" y="162" text-anchor="middle" font-size="12" fill="#6b7380">tracks board state</text><text x="425.0" y="179" text-anchor="middle" font-size="12" fill="#6b7380">win, else block</text><text x="425.0" y="196" text-anchor="middle" font-size="12" fill="#6b7380">move service</text><rect x="560" y="14" width="190" height="96" rx="8" fill="#e8f1fb" stroke="#23498c" stroke-width="1.5"/><text x="655.0" y="36" text-anchor="middle" font-size="14" font-weight="700" fill="#14213d">/left_arm  PlayNode</text><text x="655.0" y="56" text-anchor="middle" font-size="12" fill="#6b7380">requests next move</text><text x="655.0" y="73" text-anchor="middle" font-size="12" fill="#6b7380">plans with MoveIt 2</text><text x="655.0" y="90" text-anchor="middle" font-size="12" fill="#6b7380">→ Kinova Gen3 Lite</text><rect x="560" y="222" width="190" height="96" rx="8" fill="#fdecea" stroke="#b3261e" stroke-width="1.5"/><text x="655.0" y="244" text-anchor="middle" font-size="14" font-weight="700" fill="#14213d">/right_arm  PlayNode</text><text x="655.0" y="264" text-anchor="middle" font-size="12" fill="#6b7380">requests next move</text><text x="655.0" y="281" text-anchor="middle" font-size="12" fill="#6b7380">plans with MoveIt 2</text><text x="655.0" y="298" text-anchor="middle" font-size="12" fill="#6b7380">→ Kinova Gen3 Lite</text><rect x="590" y="134" width="130" height="62" rx="8" fill="#fff1e8" stroke="#f26b1d" stroke-width="1.5"/><text x="655.0" y="156" text-anchor="middle" font-size="14" font-weight="700" fill="#14213d">MutexNode</text><text x="655.0" y="176" text-anchor="middle" font-size="12" fill="#6b7380">one arm in the</text><text x="655.0" y="193" text-anchor="middle" font-size="12" fill="#6b7380">shared zone at a time</text><line x1="140" y1="165" x2="168" y2="165" stroke="#14213d" stroke-width="1.5" marker-end="url(#arT)"/><line x1="320" y1="165" x2="348" y2="165" stroke="#14213d" stroke-width="1.5" marker-end="url(#arT)"/><line x1="558" y1="62" x2="502" y2="140" stroke="#14213d" stroke-width="1.5" marker-end="url(#arT)" marker-start="url(#arT)"/><text x="520" y="92" text-anchor="end" font-size="12" fill="#14213d">move</text><line x1="558" y1="270" x2="502" y2="190" stroke="#14213d" stroke-width="1.5" marker-end="url(#arT)" marker-start="url(#arT)"/><text x="520" y="246" text-anchor="end" font-size="12" fill="#14213d">move</text><line x1="655" y1="112" x2="655" y2="132" stroke="#14213d" stroke-width="1.5" marker-end="url(#arT)" marker-start="url(#arT)"/><line x1="655" y1="220" x2="655" y2="198" stroke="#14213d" stroke-width="1.5" marker-end="url(#arT)" marker-start="url(#arT)"/><path d="M750,318 L750,334 L75,334 L75,212" fill="none" stroke="#14213d" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arT)"/><text x="300" y="328" text-anchor="middle" font-size="12" fill="#6b7380">after every move, the camera re-reads the board</text></svg></div>
+    <figcaption class="caption">ROS 2 system. Each arm runs in its own namespace; a mutex keeps the two arms out of the shared zone at the same time.</figcaption>
+  </figure>
+
   <ul>
     <li><b>Perception.</b> A fixed overhead RGB-D camera detects pieces by color in the RGB image, then uses depth and the point cloud
       to get each piece's 3D position. A coordinate transform maps it into the base frame of the arm that will pick it.</li>
@@ -49,18 +54,51 @@
       and end-effector orientation and combined them with the detected position to get the grasp pose. The nine place poses on the board are predefined.</li>
     <li><b>Motion planning.</b> The Python program calls MoveIt 2, which handles IK, path planning and collision checking.
       The arm executes the pick-and-place only if planning succeeds; otherwise the action is skipped.</li>
+    <li><b>Dual-arm coordination.</b> Both arms run under their own ROS 2 namespaces (<code>/left_arm</code>, <code>/right_arm</code>).
+      The stock Kinova description could not bring up two arms because of joint-name collisions, so I generated the URDF from Xacro and injected
+      the fixed XML where needed. Picking regions are split by side, and a MutexNode lets only one arm enter the shared board zone at a time
+      while the other retracts to a safe pose.</li>
     <li><b>Closed loop.</b> ROS 2 connects the camera, decision and planning modules. After every move the camera re-reads the board
       before the next decision, closing the loop at the task level.</li>
   </ul>
 
+  <figure class="figure media-narrow" style="max-width:560px">
+    <img src="../images/tictactoe/detection.jpg" alt="Camera view with two red pieces detected and their centroids marked" loading="lazy">
+    <figcaption class="caption">Piece detection on the camera image. Each blob is filtered by area, aspect ratio (0.9–1.15) and solidity before its centroid (blue) is used.</figcaption>
+  </figure>
+
   <div class="media-box natural" data-video="../videos/tictactoe-gazebo.mp4" data-label="Gazebo demo" data-autoplay></div>
   <p class="caption">The same pipeline in Gazebo simulation (2× speed).</p>
+
+  <h2>Workspace analysis</h2>
+  <p>
+    Before running anything on hardware, I checked in MATLAB that the shared workspace was both reachable and safe. I replicated the two arm
+    placements, sampled the task space at all nine board cells, solved inverse kinematics for both arms, and measured the clearance between
+    the active arm's target pose and the passive arm's reachable workspace.
+  </p>
+  <ul>
+    <li><b>Full redundancy.</b> Every cell is reachable by both arms, so there are no left-only, right-only or unreachable cells.</li>
+    <li><b>Large safety margins.</b> Clearance ranges from 0.36 m to 0.52 m, well above the 0.15 m threshold.</li>
+  </ul>
+  <figure class="figure">
+    <div class="plot-grid two">
+      <img src="../images/tictactoe/workspace-3d.jpg" alt="3D plot of both arms' reachable workspaces over the board" loading="lazy">
+      <img src="../images/tictactoe/workspace-redundancy.png" alt="Grid showing all nine cells reachable by both arms" loading="lazy">
+    </div>
+    <figcaption class="caption">Left: the two arms' reachable workspaces (green) overlap over the board. Right: all nine cells are reachable by both arms.</figcaption>
+  </figure>
+
 
   <h2>Lessons learned</h2>
   <p>
     The system reached about 90% task success in Gazebo and about 50% on the real arms. On hardware, most failures came from
     camera calibration error, visual noise, and the table color interfering with piece detection. These errors shift the final grasp position,
-    so a grasp can miss even when MoveIt 2 plans and executes correctly. Perception accuracy, not planning, was the bottleneck in going from simulation to the real robot.
+    so a grasp can miss even when MoveIt 2 plans and executes correctly. Perception accuracy, not planning, was the bottleneck in going from simulation to the real robot,
+    even though the real setup reused the exact same code, board layout and camera TF as the simulation.
+  </p>
+  <p>
+    The top-down grasp works because the pieces are regular blocks. For irregular objects I tried GraspNet, which gives full 6-DoF grasp poses;
+    it ran in MuJoCo simulation, but integrating it with the ROS 2 stack is left for future work.
   </p>
 
   <footer>© 2026 Shucheng Jia · <a href="../index.html">Back to home</a></footer>

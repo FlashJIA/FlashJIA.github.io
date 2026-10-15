@@ -23,5 +23,5 @@ build() {  # $1 = source .tex, $2 = sed expression, $3 = output pdf
   echo "Built files/$3"
 }
 
-build "$RESUMES/中文简历/latex/resume.tex"   's/\| 电话：[0-9]+ //'                          Shucheng_Jia_CV_zh.pdf
-build "$RESUMES/英文简历/latex/resume_en.tex" 's/[0-9]{3}-[0-9]{3}-[0-9]{4} \\ \| \\$//'   Shucheng_Jia_CV.pdf
+build "$RESUMES/中文简历/latex/贾澍成.tex"   's/\| 电话：[0-9]+ //'                          Shucheng_Jia_CV_zh.pdf
+build "$RESUMES/英文简历/latex/Shucheng_JIA.tex" 's/[0-9]{3}-[0-9]{3}-[0-9]{4} \\ \| \\$//'   Shucheng_Jia_CV.pdf

@@ -31,8 +31,8 @@ ffmpeg -i input.mov -an -vf "scale=1280:-2" -c:v libx264 -crf 28 -preset slow -m
 
 ## 更新 CV
 只改投递用的两份简历（带手机号）：
-- 英文：`简历/英文简历/latex/resume_en.tex`
-- 中文：`简历/中文简历/latex/resume.tex`
+- 英文：`简历/英文简历/latex/Shucheng_JIA.tex`
+- 中文：`简历/中文简历/latex/贾澍成.tex`
 
 然后运行下面的脚本，它会去掉手机号、编译，并生成网站上的 `files/Shucheng_Jia_CV.pdf`（英文）和 `files/Shucheng_Jia_CV_zh.pdf`（中文）：
 ```
